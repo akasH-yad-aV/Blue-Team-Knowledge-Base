@@ -114,3 +114,58 @@ compromise can affect the entire organization.
 
 ---
 
+## Groups
+
+A group is a collection of user accounts that 
+share the same permissions. Instead of assigning 
+permissions to each user individually, you assign 
+them to a group and every user in that group 
+inherits those permissions automatically.
+
+---
+
+## Common Built-in Groups
+
+### Administrators
+- Full control over the local machine
+- Can perform any system level action
+- SOC relevance: attacker goal is always 
+  to add their account to this group
+
+### Users
+- Standard access
+- Day to day operations only
+- Cannot make system level changes
+
+### Guests
+- Minimal access
+- Heavily restricted
+- Should be disabled in secure environments
+
+### Remote Desktop Users
+- Allowed to connect via RDP
+- SOC relevance: attackers who compromise 
+  an account in this group can remotely 
+  access the machine — always monitor 
+  RDP logins especially from unusual 
+  IP addresses
+
+---
+
+## Attacker Goals — Summary
+Local account compromise  →  one machine affected
+Domain account compromise →  lateral movement across network
+Administrator group access →  full local machine control
+Domain Admin compromise   →  entire organization at risk
+
+---
+
+## Key Event IDs to Watch
+
+| Event ID | What it means |
+|----------|--------------|
+| 4720 | New user account created |
+| 4732 | User added to a group |
+| 4728 | User added to privileged group |
+| 4625 | Failed login attempt |
+| 4624 | Successful login |
