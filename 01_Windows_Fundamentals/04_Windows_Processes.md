@@ -68,7 +68,7 @@ explorer.exe (parent)
 ```
 Every process stores its parent's PID, called 
 the PPID (Parent Process ID). There is always 
-a parent — no process appears out of nowhere.
+a parent, no process appears out of nowhere.
 
 **SOC relevance:** Unexpected parent child 
 relationships are one of the strongest indicators 
