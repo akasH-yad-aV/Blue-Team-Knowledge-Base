@@ -86,7 +86,7 @@ control. They are the backbone of Windows stability
 and the first place attackers try to abuse or 
 impersonate.
 
-### 3. smss.exe (Session Manager Subsystem)
+### smss.exe (Session Manager Subsystem)
 
 - First user mode process created by Windows
 - Started by the System process (PID 4)
@@ -109,7 +109,41 @@ other than System32 is a strong indicator of
 malware impersonating a legitimate process.
 
 ---
+### csrss.exe (Client Server Runtime Subsystem)
+- csrss.exe is a critical Windows process responsible for managing core user-mode system functions.
+- It handles console windows, thread creation, and parts of the Windows subsystem.
 
+**Normal Behaviour:**
+- Parent process is `smss.exe`
+- Runs as SYSTEM
+- Located at `C:\Windows\System32\csrss.exe`
+- Two or more instances are normal
+
+**Abnormal Behaviour:**
+- Running from any location other than `C:\Windows\System32` is suspicious
+- Presence of similarly named processes outside the legitimate path (possible masquerading)
+
+---
+
+### winlogon.exe (Windows Logon Application)
+- winlogon.exe is a critical system process responsible for user logon and session management.
+- It handles user authentication, logon/logoff, loading user profiles, starting the user shell, and managing secure attention sequences (Ctrl+Alt+Del).
+- It acts as a bridge between the user and the Windows security subsystem.
+
+**Normal Behaviour:**
+- Started by `smss.exe`
+- Typically spawns `explorer.exe` as the user shell
+- Runs as SYSTEM
+- One instance per user session
+- Always running
+- Located at `C:\Windows\System32\winlogon.exe`
+
+**Abnormal Behaviour:**
+- Multiple unexpected instances
+- Spawning unusual child processes (other than explorer.exe in normal scenarios)
+- Modification of related registry keys for persistence
+
+---
 ### wininit.exe (Windows Initialization Process)
 - System process responsible for starting 
   critical services after boot
@@ -217,4 +251,108 @@ always be monitored and why tools like
 Windows Credential Guard exist specifically 
 to protect it.
 
+
+---
+
+
+### svchost.exe
+- svchost.exe is a generic host process used to run Windows services.
+- It allows Windows to run multiple services (such as Windows Update or network services) using fewer resources instead of separate processes.
+- It acts as a container for running multiple Windows services.
+
+**Normal Behaviour:**
+- Parent process is usually services.exe
+- Multiple instances are normal
+- Runs as SYSTEM, LOCAL SERVICE, or NETWORK SERVICE
+- Runs with parameters (e.g., `-k <service group>`)
+- Located at "%SystemRoot%\System32\svchost.exe"
+- Always running in a normal system
+
+**Abnormal Behaviour:**
+- Connecting to unknown or suspicious external IP addresses
+- Spawning cmd.exe or powershell.exe in unusual contexts
+- Running from any location other than %SystemRoot%\System32 (possible masquerading)
+
+**Common Abuses:**
+- **Masquerading:** Malware mimics svchost.exe using similar names or running outside the legitimate path
+- **Service execution:** Attackers may install malicious services that run under svchost
+- **Process injection:** Malware injects code into a legitimate svchost process to evade detection and maintain persistence
+- **Persistence via registry:** Adversaries may create or modify registry keys to ensure malicious services load at boot
+
+---
+
+
+
+### explorer.exe
+- explorer.exe is the Windows graphical shell responsible for the user interface, including the desktop, taskbar, start menu, and file browsing.
+- It runs automatically after user login.
+- It provides the main interface for interacting with the Windows operating system.
+
+**Normal Behaviour:**
+- Parent process is "winlogon.exe"
+- One instance per session is expected
+- Located at "C:\Windows\explorer.exe"
+- Can spawn processes like "cmd.exe", "powershell.exe", or browsers during normal user activity
+
+**Abnormal Behaviour:**
+- Multiple unexpected instances
+- Injection by malware into explorer.exe
+- Unusual child processes without user interaction
+
+---
+
+## Windows Core Process Flow
+
+```text
+System (PID 4)
+│
+└── smss.exe (Session Manager)
+    │
+    ├── csrss.exe (Client Server Runtime Subsystem)
+    │
+    ├── wininit.exe (System Initialization)
+    │   │
+    │   ├── services.exe (Service Control Manager)
+    │   │   │
+    │   │   └── svchost.exe (multiple instances hosting services)
+    │   │
+    │   ├── lsass.exe (Local Security Authority)
+    │   │
+    │   └── other background system processes
+    │
+    └── winlogon.exe (User Logon Process)
+        │
+        └── explorer.exe (User Shell)
+            │
+            ├── cmd.exe / powershell.exe
+            ├── browsers (chrome, edge, etc.)
+            └── user applications
+
+```
+---
+## Key Points 
+
+- `smss.exe` is the first user-mode process started by the Windows kernel and is responsible for creating system and user sessions
+
+- `csrss.exe` is a critical process; terminating it will cause a system crash (BSOD)
+
+- `wininit.exe` starts essential system processes like `services.exe` and `lsass.exe`
+
+- `services.exe` (Service Control Manager) manages Windows services and launches multiple `svchost.exe` instances
+
+- `svchost.exe` hosts multiple services; multiple instances are normal, but location must always be `%SystemRoot%\System32`
+
+- `lsass.exe` stores authentication data in memory, making it a high-value target for credential dumping
+
+- `winlogon.exe` handles user authentication and session management; typically one instance per session
+
+- `explorer.exe` is the user shell; it launches user applications and provides the GUI
+
+- Most critical system processes run as SYSTEM and are located in `C:\Windows\System32`
+
+- Processes running from unusual locations or with slightly modified names (e.g., `svch0st.exe`) are strong indicators of masquerading
+
+- Parent-child relationships are important: unexpected parents can indicate malicious activity
+
+- High-value attack targets include `lsass.exe` (credentials), `svchost.exe` (persistence), and `explorer.exe` (user-level execution)
 
