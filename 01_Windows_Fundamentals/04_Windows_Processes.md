@@ -85,3 +85,25 @@ like booting, security, user sessions, and service
 control. They are the backbone of Windows stability 
 and the first place attackers try to abuse or 
 impersonate.
+
+### 3. smss.exe (Session Manager Subsystem)
+
+- First user mode process created by Windows
+- Started by the System process (PID 4)
+- Responsible for creating user sessions 
+  and loading the Windows environment
+- Starts csrss.exe and winlogon.exe then 
+  exits after sessions are created
+- Only one master instance runs at a time
+
+**Normal behavior:**
+- Parent is always System (PID 4)
+- Located at C:\Windows\System32\smss.exe
+- Runs as SYSTEM
+- Only one instance (child instances 
+  exit after session creation)
+
+**SOC relevance:** A second persistent instance 
+of smss.exe or one running from any location 
+other than System32 is a strong indicator of 
+malware impersonating a legitimate process.
