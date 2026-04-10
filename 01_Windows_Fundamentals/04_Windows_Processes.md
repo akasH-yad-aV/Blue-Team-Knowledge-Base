@@ -103,7 +103,118 @@ impersonate.
 - Only one instance (child instances 
   exit after session creation)
 
-**SOC relevance:** A second persistent instance 
+**Abnormal behaviour:** A second persistent instance 
 of smss.exe or one running from any location 
 other than System32 is a strong indicator of 
 malware impersonating a legitimate process.
+
+---
+
+### wininit.exe (Windows Initialization Process)
+- System process responsible for starting 
+  critical services after boot
+- Sets up the environment for system services
+- Initiates other core processes
+```
+wininit.exe
+|——→ services.exe
+|——→ lsass.exe
+|——→ lsm.exe
+```
+
+**Normal behavior:**
+- Parent is always smss.exe
+- Only one instance expected
+- Runs as SYSTEM
+- Located at C:\Windows\System32\wininit.exe
+
+**Abnormal behavior:**
+- A second instance or one running from any 
+  location other than System32 is a strong 
+  indicator of masquerading
+- If it spawns any process other than 
+  services.exe, lsass.exe, or lsm.exe that 
+  is a strong indicator of system level 
+  compromise and dangerous as it run as system
+
+---
+
+### services.exe (Service Control Manager)
+- Core Windows process that manages starting, 
+  stopping, and interacting with Windows services
+- Acts as the parent for most svchost.exe 
+  instances on the system
+
+**Normal behavior:**
+- Parent is always wininit.exe
+- Runs as SYSTEM
+- Only one instance expected
+- Located at C:\Windows\System32\services.exe
+- Should only spawn svchost.exe as children
+
+**Abnormal behavior:**
+- A second instance or one running from 
+  any location other than System32 indicates 
+  malware masquerading as a legitimate process
+- If the parent is anything other than 
+  wininit.exe then that is redflag as it never should happen 
+- Spawning unexpected child processes other 
+  than svchost.exe indicates malicious behavior
+
+**Attacker Aim** 
+-  Attackers abuse services 
+by creating a fake service that points to their 
+malware. When the system boots, the service 
+starts automatically giving the attacker 
+persistent access without needing to manually 
+run anything.
+
+---
+
+### lsass.exe (Local Security Authority Subsystem)
+- Core Windows process responsible for security 
+  policy enforcement, user authentication, 
+  and credential management
+- Verifies every login attempt on the system
+- Stores authentication data in memory including 
+  Kerberos tickets and NTLM hashes
+- Handles password changes and generates 
+  security event logs
+
+- Verifies user login credentials
+- Enforces local security policies
+Stores credentials in memory
+- Generates Event ID 4624 (success)
+and 4625 (failure) on every login attempt
+
+
+**Normal behavior:**
+- Parent is always wininit.exe
+- Only one instance expected
+- Runs as SYSTEM
+- Located at C:\Windows\System32\lsass.exe
+- Always running 
+
+**Abnormal behavior:**
+- A second instance of lsass.exe is strong indicator of suspicious activiry. Only one should 
+  ever exist
+- Running from any location other than 
+  System32 is a strong indicator of 
+  a masquerading attack
+- Any unexpected child processes spawned 
+  from lsass.exe indicate compromise
+
+**Attackers Aim** lsass.exe is the most 
+targeted process in Windows environments. 
+Because it stores passwords, NTLM hashes, 
+and Kerberos tickets in memory, attackers 
+use tools like Mimikatz to dump credentials 
+directly from it. If an attacker dumps lsass 
+they can move laterally across the entire 
+network without needing to crack a single 
+password. This is why lsass access should 
+always be monitored and why tools like 
+Windows Credential Guard exist specifically 
+to protect it.
+
+
