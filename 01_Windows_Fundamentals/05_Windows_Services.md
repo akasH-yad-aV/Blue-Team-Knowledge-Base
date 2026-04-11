@@ -75,3 +75,61 @@
 
 ### File System Driver (SERVICE_FILE_SYSTEM_DRIVER)
 - A specialized kernel driver that handles filesystem operations. The same kernel mode rules apply as above.
+
+---
+## Service Lifecycle
+- A service moves through different states managed by the SCM:
+  - Start Pending → Running
+  - Running → Stop Pending → Stopped
+- Services must regularly report their state using `SetServiceStatus`
+- Failure to report state properly can cause the SCM to terminate the service
+
+
+---
+
+## Service Configuration
+- Services are defined in the Windows Registry under:
+  `HKLM\SYSTEM\CurrentControlSet\Services`
+- Important configuration fields include:
+  - ImagePath (executable path)
+  - Start type (Auto, Manual, Disabled)
+  - Service account (SYSTEM, LocalService, NetworkService)
+
+
+  ---
+  ## Service Start Types
+- Automatic → starts at boot
+- Manual → starts on demand
+- Disabled → cannot be started
+
+
+---
+
+## Service Security Context
+- Services run under specific accounts:
+  - SYSTEM → highest privilege
+  - LocalService → limited privileges
+  - NetworkService → limited but can access network
+- The privilege level determines the impact if a service is compromised
+
+
+---
+## Service Abuse & Persistence
+- Attackers can create new services to maintain persistence
+- Modify existing services to execute malicious binaries
+- Change `ImagePath` in registry to point to malicious code
+- Use services to gain SYSTEM-level execution
+
+## Key Points to Remember
+
+- A Windows service runs in the background and does not require user interaction
+- All services are managed by the Service Control Manager (`services.exe`)
+- Services must communicate with the SCM using a defined handshake (`StartServiceCtrlDispatcher`)
+- Services must report their state using `SetServiceStatus`, or they may be terminated
+- Service configuration is stored in the registry at `HKLM\SYSTEM\CurrentControlSet\Services`
+- `ImagePath` defines what executable the service runs
+- Services can run under different accounts (SYSTEM, LocalService, NetworkService)
+- `svchost.exe` is used to host multiple services in shared processes
+- Start types (Automatic, Manual, Disabled) control when a service runs
+- Attackers commonly abuse services for persistence or privilege escalation
+- Modifying or creating services can lead to SYSTEM-level execution
