@@ -165,3 +165,230 @@ File                |    Value
 File Content        |    Value Data
 
 ```
+---
+
+## Registry Hives 
+- there are total 5 root keys or hives 
+- they are at the absolute top of the hierarchy 
+
+**Not All Keys Are Real**
+
+- some of these root keys are virtual, they do not have their own hive file on disk. they are pointers or merged views of other real hives
+
+
+```
+HKEY_LOCAL_MACHINE     Real          (HKLM)
+HKEY_CURRENT_USER      Virtual       (HKCU)
+HKEY_USERS             Real          (HKU)
+HKEY_CLASSES_ROOT      Virtual       (HKCR)
+HKEY_CURRENT_CONFIG    Virtual       (HKCC)
+```
+ 
+ **Why does this matter**
+ - when doing forensic on a dead disc or offline hives HKCU ,HKCR and HKCC do not exist as file . we have to know where their data actually lives to find it .
+
+
+
+ 
+**Why does this matter**
+- when doing forensics on a dead disk or offline hives, HKCU, HKCR and HKCC do not exist as files. we need to know where their actual data lives to find them
+
+---
+
+### HKEY_LOCAL_MACHINE (HKLM)
+- machine wide settings, applies to all users
+- contains hardware configs, installed software, services, drivers
+- targeted by attackers for persistence 
+ 
+### HKEY_CURRENT_USER (HKCU)
+- settings for currently logged in user only 
+- maps directly to that user's NTUSER.DAT file 
+- user level persistence and per user malware config lives here
+
+### HKEY_USERS 
+- contains subkeys for every user profile on the system by SID
+- HKCU is just a shortcut pointing into this hive
+
+### HKEY_CLASSES_ROOT
+- file associations and COM object registration 
+- a merge of HKLM\SOFTWARE\Classes and HKCU\SOFTWARE\Classes
+- COM hijacking lives here
+
+### HKEY_CURRENT_CONFIG (HKCC)
+- current hardware profile 
+- mostly a pointer into HKLM\SYSTEM\CurrentControlSet\Hardware Profiles
+
+---
+
+## How Windows Uses the Registry (Boot to Login)
+- windows actively reads the registry at every stage of startup  to know:
+  - what hardware exists
+  - what drivers to load
+  - what services to start
+  - who is logging in
+  - what programs to run
+  - what policies to enforce
+- without the registry, Windows does not know how to start itself
+
+---
+
+### The Full Sequence 
+
+**STAGE 1 :- the very first registry read (bootexecute)**
+```
+Location:
+HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\BootExecute
+```
+- when: this is the earliest point. the windows kernel has just loaded, no user session, no desktop, no services. almost nothing is running yet 
+- what happens here: windows reads the BootExecute value and runs whatever is listed there before anything else happens
+
+*Security context:* this is one of the most powerful persistence locations in the registry. anything placed here runs:
+   - before security software loads
+   - before antivirus loads
+   - before any user logs in 
+   - with very high privileges
+
+---
+
+**STAGE 2 :- kernel loads boot drivers (Start = 0)**
+```
+Location:
+HKLM\SYSTEM\CurrentControlSet\Services\
+```
+- when: immediately after BootExecute. the kernel is initializing and needs drivers to communicate with hardware 
+- what happens here: windows reads every subkey under Services and loads entries where Start = REG_DWORD = 0x00000000
+
+*Security context:* a malicious driver here loads before endpoint security solutions. this is rootkit level territory
+
+---
+
+**STAGE 3 :- system drivers load (Start = 1)**
+
+```
+Location:
+HKLM\SYSTEM\CurrentControlSet\Services\
+```
+- when: still early. kernel is running and basic hardware is already initialized 
+- what happens here: windows loads entries where Start = 1 
+
+*Security context:* still loads before most user space security tools. malicious drivers here are still dangerous
+
+---
+
+**STAGE 4 :- automatic services start (Start = 2)**
+
+
+```
+Location:
+HKLM\SYSTEM\CurrentControlSet\Services\
+```
+- when: boot is complete and the desktop environment is starting 
+- what happens here: windows reads service subkeys with Start = 2 and starts them 
+
+*Security context:* very common persistence method. attackers can create malicious services here
+
+---
+
+**STAGE 5 :- user logs in (NTUSER.DAT loads)**
+
+
+```
+Location:
+C:\Users\<username>\NTUSER.DAT
+         ↓
+Loaded into memory as:
+HKU\<user SID>
+         ↓
+Mapped as shortcut to:
+HKCU\
+```
+
+- when: user logs in and windows loads user specific configuration
+
+- what happens:
+  - step 1: windows finds the user's SID (unique identifier)
+  - step 2: locates NTUSER.DAT on disk
+  - step 3: loads it into HKU\<SID> and maps it to HKCU
+
+```
+User's personal software settings
+User's desktop preferences
+User's recent documents history
+User's network drive mappings
+User's personal Run keys
+User's personal policies
+```
+
+*Security context:* each user has their own NTUSER.DAT. this file shows what the user did, what ran, and possible user level persistence
+
+---
+
+**Stage 6 :- Run Keys Execute (Programs Auto-Start)**
+```
+Locations (in order of execution):
+
+HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce
+HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce
+```
+
+- when: after login, when desktop is loading
+
+- what happens:
+windows reads values inside these keys:
+
+```
+HKLM\...\Run
+
+Values:
+SecurityHealth  →  C:\Windows\System32\SecurityHealth.exe
+OneDrive        →  C:\Program Files\OneDrive\OneDrive.exe
+Zoom            →  C:\Program Files\Zoom\Zoom.exe
+```
+
+- each entry is executed automatically
+
+- this is why apps like OneDrive or Zoom start at login
+
+*Security context:* one of the most abused persistence locations. simple and reliable
+
+---
+
+### the complete picture
+
+
+```
+POWER ON
+    │
+    ▼
+Stage 1 — BootExecute
+    │       Runs disk check and anything else here
+    │       Registry: HKLM\...\Session Manager\BootExecute
+    │       Timing: Before almost everything
+    ▼
+Stage 2 — Boot Drivers (Start = 0)
+    │       Kernel loads hardware drivers
+    │       Registry: HKLM\...\Services\ (Start=0)
+    │       Timing: Kernel initialization
+    ▼
+Stage 3 — System Drivers (Start = 1)
+    │       More drivers load
+    │       Registry: HKLM\...\Services\ (Start=1)
+    │       Timing: Kernel execution
+    ▼
+Stage 4 — Automatic Services (Start = 2)
+    │       All major Windows services start
+    │       Registry: HKLM\...\Services\ (Start=2)
+    │       Timing: After boot, before login
+    ▼
+Stage 5 — User Logs In
+    │       NTUSER.DAT loaded → becomes HKCU
+    │       Registry: C:\Users\<name>\NTUSER.DAT
+    │       Timing: At login
+    ▼
+Stage 6 — Run Keys Execute
+            Auto-start programs launch
+            Registry: HKLM\...\Run and HKCU\...\Run
+            Timing: Desktop appearing
+```
