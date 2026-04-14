@@ -14,7 +14,7 @@
 
 ### Flow 
 
-### Flow 
+### Diagram 
 ```
     Attacker
    (1 machine)
@@ -44,7 +44,7 @@
 - Difficulty in tracing: harder to identify the origin
 - Complexity in blocking: difficult to block due to distributed nature
 
-### Flow 
+### Diagram  
 
 
 ```
@@ -65,5 +65,33 @@ Bot 1     Bot 2   Bot 3   Bot 4
         User A       User B
        (blocked)    (blocked)
 ```
+### How it works (simple view)
+- attacker controls multiple compromised devices (botnet)
+- sends large number of requests to target
+- server resources get exhausted
+- legitimate users cannot access the service
+---
 
-     
+### Impact
+- service downtime
+- loss of revenue for businesses
+- disruption of online services
+- damage to reputation
+
+---
+
+### Prevention (overview)
+- use rate limiting to control request traffic
+- deploy firewalls and IDS/IPS
+- use DDoS protection services (e.g. CDN)
+- monitor traffic for unusual spikes
+
+--- 
+### DoS vs DDoS
+
+| Feature        | DoS                     | DDoS                          |
+|---------------|------------------------|-------------------------------|
+| Source        | Single system          | Multiple systems (botnet)     |
+| Traffic       | Limited                | Very high                     |
+| Detection     | Easier                 | Harder                        |
+| Mitigation    | Easier                 | More complex                  |
