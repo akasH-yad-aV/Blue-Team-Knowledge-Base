@@ -1,7 +1,5 @@
 # DoS And DDoS
 
-# DoS and DDoS
-
 ## DoS
 - A DoS (Denial of Service) attack is a type of cyberattack where a single internet connected system floods a target system, usually a server, with excessive traffic to make it unavailable.
 - The attacker sends a large number of requests, which can overwhelm the server, causing it to slow down, crash, or stop responding to legitimate users.
@@ -46,7 +44,6 @@
 
 ### Diagram  
 
-
 ```
 Bot 1     Bot 2   Bot 3   Bot 4
   |          |     |       |     
@@ -63,8 +60,16 @@ Bot 1     Bot 2   Bot 3   Bot 4
           |             |
           V             V 
         User A       User B
-       (blocked)    (blocked)
+       (Blocked)    (Blocked)
 ```
+---
+
+### Types of DoS / DDoS
+- Volume based attacks: flood the network with massive traffic (e.g. UDP flood)
+- Protocol attacks: target server resources or network devices (e.g. SYN flood)
+- Application layer attacks: target specific services like HTTP requests (e.g. HTTP flood)
+
+---
 ### How it works (simple view)
 - attacker controls multiple compromised devices (botnet)
 - sends large number of requests to target
@@ -87,6 +92,7 @@ Bot 1     Bot 2   Bot 3   Bot 4
 - monitor traffic for unusual spikes
 
 --- 
+
 ### DoS vs DDoS
 
 | Feature        | DoS                     | DDoS                          |
@@ -95,3 +101,15 @@ Bot 1     Bot 2   Bot 3   Bot 4
 | Traffic       | Limited                | Very high                     |
 | Detection     | Easier                 | Harder                        |
 | Mitigation    | Easier                 | More complex                  |
+
+
+### Key Points to Remember
+
+- DoS uses a single system, while DDoS uses multiple systems (botnet)
+- DDoS attacks are harder to detect and block due to distributed sources
+- Main goal is to make a service unavailable to legitimate users
+- High traffic overwhelms server resources like CPU, memory, or bandwidth
+- Application layer attacks (like HTTP flood) can be harder to detect than volume attacks
+- Botnets are commonly used in DDoS attacks
+- Even a simple attack can cause major downtime and business impact
+- Monitoring traffic spikes is important for early detection
