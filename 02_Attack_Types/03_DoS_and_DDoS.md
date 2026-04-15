@@ -113,3 +113,16 @@ Bot 1     Bot 2   Bot 3   Bot 4
 - Botnets are commonly used in DDoS attacks
 - Even a simple attack can cause major downtime and business impact
 - Monitoring traffic spikes is important for early detection
+
+### Key Points to Remember
+
+- Malware is designed to damage systems, steal data, or gain unauthorized access
+- Common entry points include phishing emails, infected downloads, and USB devices
+- Viruses require a host file, while worms spread on their own
+- Ransomware encrypts data and demands payment for access
+- Spyware secretly collects sensitive information
+- Trojans disguise themselves as legitimate software
+- Users are often the weakest point in malware infection
+- Downloading cracked or unofficial software increases risk
+- Regular updates, antivirus, and backups reduce impact
+- Always verify files and links before opening or installing
