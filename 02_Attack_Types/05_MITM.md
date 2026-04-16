@@ -53,4 +53,30 @@ An evil twin attack happens when an attacker creates a fake Wi-Fi network that l
 ---
 
 ### SSL Stripping 
-SSL stripping is a Man-in-the-Middle (MitM) attack that downgrades a secure HTTPS connection to an unsecured HTTP connection. By removing encryption, the attacker can read, steal, or modify sensitive data such as passwords, credit card details, and session cookies without the user being aware.
+SSL stripping is a Man-in-the-Middle (MitM) attack that downgrades a secure HTTPS connection to an unsecured HTTP connection. By removing encryption, the attacker can read, steal, or modify sensitive data such as passwords, credit card details, and session 
+cookies without the user being aware.
+
+---
+### Where it happens
+- local networks (ARP spoofing, evil twin)
+- public Wi-Fi (evil twin, SSL stripping)
+- DNS infrastructure (DNS spoofing)
+
+---
+### Prevention
+- use HTTPS websites and avoid HTTP connections
+- avoid public Wi-Fi or use VPN
+- verify network names before connecting
+- use secure DNS services
+- enable certificate warnings in browsers
+---
+### Key Points to Remember
+
+- MITM attacks happen when attacker sits between user and server
+- attacker can read, modify, or block data
+- ARP spoofing works on local network level
+- DNS spoofing redirects users to fake destinations
+- evil twin targets users through fake Wi-Fi networks
+- SSL stripping removes HTTPS protection
+- public Wi-Fi is a common attack surface
+- encryption (HTTPS) is key defense against these attacks
