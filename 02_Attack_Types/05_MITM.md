@@ -35,4 +35,22 @@
 
 
 
+## Common Methods 
 
+### ARP Spoofing
+ARP spoofing is a Man-in-the-Middle (MitM) attack where an attacker sends fake ARP messages on a local network to associate their MAC address with the IP address of a legitimate device, usually the gateway. This causes the victim’s traffic to be sent to the attacker instead of the real destination. Once in the middle, the attacker can monitor, modify, or block the data. By poisoning both the victim and the gateway, the attacker can control communication in both directions.
+
+---
+
+### DNS Spoofing 
+DNS spoofing is an attack where an attacker intercepts a DNS request and responds with a fake IP address that points to their own server instead of the real one. This can redirect users to fake websites that look identical to legitimate ones, or allow the attacker to silently relay traffic and capture sensitive information without the user noticing.
+
+---
+
+### Evil Twin
+An evil twin attack happens when an attacker creates a fake Wi-Fi network that looks like a legitimate one. Users connect to it thinking it is safe, but all their traffic passes through the attacker’s system. This allows the attacker to monitor activity, capture credentials, or manipulate data being sent over the network.
+
+---
+
+### SSL Stripping 
+SSL stripping is a Man-in-the-Middle (MitM) attack that downgrades a secure HTTPS connection to an unsecured HTTP connection. By removing encryption, the attacker can read, steal, or modify sensitive data such as passwords, credit card details, and session cookies without the user being aware.
