@@ -80,4 +80,4 @@ IDS can be deployed:
 - Signature based detection works for known attacks, anomaly based helps detect unknown behavior  
 - IPS must be inline to block traffic, IDS does not need to be inline  
 - IDS is useful for analysis and investigation, IPS is useful for stopping attacks immediately  
-- Both IDS and IPS work alongside firewalls as additional security layers  
+- Both IDS and IPS work alongside firewalls as additional security layer  
