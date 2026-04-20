@@ -64,3 +64,56 @@ client <------------- if allowed (proxy) <------- Destination server response
 ### Next Generation firewall 
 - advanced firewall that combines traditional firewall functions with deep packet inspection and intrusion prevention  
 - traditional firewalls check IP, port, and protocol, while this type also analyzes application data and user activity  
+
+### Firewall Rule Basics
+
+A firewall rule typically includes:
+
+- Source IP
+- Destination IP
+- Port (e.g. 80, 443, 22)
+- Protocol (TCP/UDP)
+- Action (allow / deny)
+
+Example:
+- Allow traffic from 192.168.1.10 to port 80 (HTTP)
+- Block traffic from unknown external IPs to port 22 (SSH)
+
+### Firewall Rule Basics
+
+A firewall rule typically includes:
+
+- Source IP
+- Destination IP
+- Port (e.g. 80, 443, 22)
+- Protocol (TCP/UDP)
+- Action (allow / deny)
+
+Example:
+- Allow traffic from 192.168.1.10 to port 80 (HTTP)
+- Block traffic from unknown external IPs to port 22 (SSH)
+
+### Firewall Logs
+
+Firewalls generate logs for every allowed or blocked connection.
+
+Common fields:
+- Source IP
+- Destination IP
+- Source port
+- Destination port
+- Protocol
+- Action (allow / deny)
+- Timestamp
+
+These logs are used for monitoring, detection, and investigation.
+
+### Key Points to Remember
+
+- Firewalls control traffic based on rules
+- Stateful firewalls track connections, stateless do not
+- Default deny policy improves security
+- Firewall logs are important for detection and monitoring
+- Firewalls are first line of defense but not complete protection
+
+
