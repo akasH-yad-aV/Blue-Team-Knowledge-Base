@@ -86,3 +86,34 @@
 ## Why Cyber Kill Chain 
 - The primary purpose of the Cyber Kill Chain is to help security teams understand and disrupt attacks by breaking them into stages  
 - It also acts as a foundation for more advanced frameworks like Unified Kill Chain and MITRE ATT&CK  
+
+### Detection Perspective (Where to Observe)
+
+- Reconnaissance → firewall logs, web server logs (scanning, probing)
+- Delivery → email logs, web proxy logs (phishing, downloads)
+- Exploitation → endpoint logs (process creation, crashes)
+- Installation → system logs (services, registry changes)
+- Command & Control → DNS logs, network traffic (beaconing)
+- Actions on Objectives → data access logs, unusual activity
+
+### Breaking the Kill Chain
+
+- The attack does not need to be stopped at the final stage
+- Disrupting any one phase can prevent the attack from succeeding
+- Earlier detection gives more time to respond and reduces impact
+
+ ### Limitation of Cyber Kill Chain 
+
+- linear constraint :- the model assumes a strict sequence, but attackers often loop back or skip stages (for example, a ransomware attack might simultaneously execute delivery, exploitation, and action without clear separate step by step progression)  
+
+- too strategic, not tactical :- it identifies that an attack is occurring but not how it is happening, making it less useful for technical and granular detection compared to MITRE ATT&CK  
+
+- reactive focus :- over investment in preventing initial perimeter breaches can lead to poor detection of intruders already inside the network  
+
+- insiders and identity threat :- the framework assumes external threats, missing malicious employees who already have authorized access and can skip reconnaissance and weaponization. It also fails to track attackers using valid credentials for lateral movement instead of malware  
+### Key Points to Remember
+
+- Cyber Kill Chain breaks attacks into stages
+- Each stage provides an opportunity for detection
+- Early detection improves defense effectiveness
+- Not all attacks strictly follow this sequence
