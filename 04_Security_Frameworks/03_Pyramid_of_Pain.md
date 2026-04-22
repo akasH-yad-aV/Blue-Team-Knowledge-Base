@@ -39,3 +39,35 @@
 ### 6. Tactics, Techniques, and Procedures (Tough)
 - behavioral patterns used by attackers  
 - very difficult to change because they represent how the attacker operates  
+
+---
+## Detection Strategy
+
+- lower levels (hash, IP, domain) are easy to detect but also easy for attackers to change  
+- higher levels (tools, TTPs) are harder to detect but more effective in long term defense  
+- focusing on behavior gives better detection compared to static indicators  
+
+---
+
+## Attacker vs Defender Perspective
+
+- lower levels → low effort for attacker to change  
+- higher levels → high effort and cost for attacker  
+- goal of defender is to push detection toward higher levels of the pyramid  
+
+---
+
+## Limitations
+
+- detecting higher level behaviors can be complex  
+- may require advanced tools like SIEM or EDR  
+- not all organizations can fully operate at higher levels  
+
+---
+## Key Points to Remember
+
+- Pyramid of Pain measures how difficult it is for attackers to adapt  
+- lower level indicators are easy to detect but easy to bypass  
+- higher level detection focuses on behavior and is more effective  
+- defenders should aim to move detection toward TTPs  
+- increasing attacker effort can slow down or stop attacks  
