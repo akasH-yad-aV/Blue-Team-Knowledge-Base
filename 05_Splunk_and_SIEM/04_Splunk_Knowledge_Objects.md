@@ -68,6 +68,22 @@
 - groups events based on a defined search pattern  
 - helps in quickly identifying specific types of events  
 
+### Knowledge Object Scope
+
+- knowledge objects can be defined at different levels:
+  - user level :- only visible to the creator  
+  - app level :- shared within a specific app  
+  - global level :- available across the entire Splunk environment  
+
+- proper scope management is important to avoid conflicts and duplication  
+
+### When to Use Knowledge Objects
+
+- when the same query or logic is used repeatedly  
+- when multiple users need consistent results  
+- when raw logs need additional context or structure  
+- when building dashboards, alerts, or detection logic  
+
 ---
 
 ## Key Points
