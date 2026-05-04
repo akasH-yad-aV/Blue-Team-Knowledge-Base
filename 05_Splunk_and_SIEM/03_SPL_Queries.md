@@ -115,3 +115,45 @@ index=windows sourcetype=WinEventLog:Security EventCode=4625 NOT user=guest
 
 - this query filters logs step by step to give focused results  
 
+## Filtering vs Transforming Commands
+
+- SPL commands can be divided into two types based on what they do with data  
+
+### Filtering Commands
+- these commands reduce the dataset by selecting only relevant events  
+- they do not change the structure of the data  
+
+examples:
+- search  
+- where  
+
+example:
+
+```
+index=windows EventCode=4625
+```
+
+
+- this filters logs to only failed login events  
+
+
+### Transforming Commands
+- these commands modify or reshape the data  
+- they are used to summarize, aggregate, or present results  
+
+examples:
+- stats  
+- chart  
+- table  
+
+example:
+
+index=windows EventCode=4625 | stats count by user
+
+
+- this groups failed login events by user and shows count  
+
+
+### Key Difference
+- filtering commands → reduce data  
+- transforming commands → summarize or restructure data  
