@@ -157,3 +157,40 @@ index=windows EventCode=4625 | stats count by user
 ### Key Difference
 - filtering commands → reduce data  
 - transforming commands → summarize or restructure data  
+
+---
+## Stats Command
+
+- stats is a transforming command used to calculate and summarize data  
+- it helps convert raw events into meaningful results like count, sum, average  
+
+
+### Basic Usage
+
+```
+- index=windows EventCode=4625 | stats count
+
+- counts total number of failed login events  
+
+
+- index=windows EventCode=4625 | stats count by user
+```
+
+
+- groups results by user and shows how many failed logins each user has  
+
+### Common Functions
+
+- count :- counts number of events  
+- sum :- adds numeric values  
+- avg :- calculates average  
+- min / max :- shows minimum or maximum value  
+
+example:
+
+```
+index=network | stats avg(bytes) by src_ip
+```
+
+
+- shows average bytes sent by each source IP  
